@@ -1,0 +1,18 @@
+{
+	"name": "Flight Control Emulator",
+	"authors":
+	{
+    	"name": "Lena Voytek",
+    	"email": "lena@ieee.org",
+    	"url": "https://lvoytek.org/contact"
+	},
+	"keywords": "flight, aircraft, ppm, receiver, encoder, RC",
+	"description": "A library for modelling the output of ppm and 6-channel pwm receivers for RC aircraft and other vehicles",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/lvoytek/FlightControlEmulator.git"
+	},
+	"version": "1.0",
+	"frameworks": "arduino",
+	"platforms": "*"
+}
