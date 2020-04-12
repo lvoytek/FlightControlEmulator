@@ -48,9 +48,6 @@
 #define PWM_CHANNEL_AUX_A 5
 #define PWM_CHANNEL_AUX_B 6
 
-#define PWM_SUCCESS 0
-#define PWM_FAILURE 1
-
 //Enumeration of MCPWM capable pins on the Adafruit ESP32 Feather
 typedef enum
 {
@@ -66,6 +63,14 @@ typedef enum
 	PIN_32 = 32,
 	PIN_14 = 14
 } feather_pwm_capable_pins;
+
+//PWM function return values
+typedef enum
+{
+	PWM_SUCCESS = 0,
+	PWM_FAILURE
+} pwm_state;
+
 
 class PWMHandler
 {
@@ -103,7 +108,21 @@ public:
 	 * 
 	 * returns PWM_SUCCESS on proper initialization and PWM_FAILURE on MCPWMn failure
 	 */
-	int init();
+	pwm_state init();
+
+	/*
+	 * Activate all PWM outputs in current configuration
+	 * 
+	 * returns PWM_SUCCESS on successful start and PWM_FAILURE otherwise
+	*/
+	pwm_state start();
+
+	/*
+	 * Deactivate all PWM outputs in current configuration
+	 * 
+	 * returns PWM_SUCCESS on successful stop and PWM_FAILURE otherwise
+	*/
+	pwm_state stop();
 
 };
 

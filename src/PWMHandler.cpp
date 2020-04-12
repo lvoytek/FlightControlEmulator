@@ -70,7 +70,7 @@ PWMHandler::PWMHandler(mcpwm_unit_t pwmUnit, int channel1, int channel2, int cha
 	this->mcpwmChannelMap[5] = MCPWM2B;
 }
 
-int PWMHandler::init()
+pwm_state PWMHandler::init()
 {
 	//Initialize pins
 	for(int i = 0; i < 6; i++)
@@ -90,6 +90,28 @@ int PWMHandler::init()
 	for(int i = 0; i < 3; i++)
 	{
 		if(mcpwm_set_frequency(this->pwmUnit, (mcpwm_timer_t) i, PWM_DEFAULT_APPROX_FREQUENCY_HZ) != ESP_OK)
+			return PWM_FAILURE;
+	}
+
+	return PWM_SUCCESS;
+}
+
+pwm_state PWMHandler::start()
+{
+	for(int i = 0; i < 3; i++)
+	{
+		if(mcpwm_start(this->pwmUnit, (mcpwm_timer_t) i) != ESP_OK)
+			return PWM_FAILURE;
+	}
+
+	return PWM_SUCCESS;
+}
+
+pwm_state PWMHandler::stop()
+{
+	for(int i = 0; i < 3; i++)
+	{
+		if(mcpwm_stop(this->pwmUnit, (mcpwm_timer_t) i) != ESP_OK)
 			return PWM_FAILURE;
 	}
 
