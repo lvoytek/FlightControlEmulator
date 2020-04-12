@@ -21,3 +21,77 @@
 */
 
 #include "PWMHandler.h"
+
+PWMHandler::PWMHandler()
+{
+	this->pwmUnit = MCPWM_UNIT_0;
+	this->channelPins[0] = PIN_12;
+	this->channelPins[1] = PIN_27;
+	this->channelPins[2] = PIN_33;
+	this->channelPins[3] = PIN_15;
+	this->channelPins[4] = PIN_32;
+	this->channelPins[5] = PIN_14;
+
+	this->mcpwmChannelMap[0] = MCPWM0A;
+	this->mcpwmChannelMap[1] = MCPWM0B;
+	this->mcpwmChannelMap[2] = MCPWM1A;
+	this->mcpwmChannelMap[3] = MCPWM1B;
+	this->mcpwmChannelMap[4] = MCPWM2A;
+	this->mcpwmChannelMap[5] = MCPWM2B;
+
+	for(int i = 0; i < 3; i++)
+	{
+		this->configurationData[i].cmpr_a = 5.0;
+		this->configurationData[i].cmpr_b = 5.0;
+		this->configurationData[i].duty_mode = MCPWM_DUTY_MODE_0;
+		this->configurationData[i].counter_mode = MCPWM_UP_COUNTER;
+	}
+}
+
+PWMHandler::PWMHandler(mcpwm_unit_t pwmUnit, int channel1, int channel2, int channel3, int channel4, int channel5, int channel6)
+{
+	if(pwmUnit >= MCPWM_UNIT_MAX)
+		this->pwmUnit = MCPWM_UNIT_0;
+	else
+		this->pwmUnit = pwmUnit;
+
+	this->channelPins[0] = channel1;
+	this->channelPins[1] = channel2;
+	this->channelPins[2] = channel3;
+	this->channelPins[3] = channel4;
+	this->channelPins[4] = channel5;
+	this->channelPins[5] = channel6;
+
+	this->mcpwmChannelMap[0] = MCPWM0A;
+	this->mcpwmChannelMap[1] = MCPWM0B;
+	this->mcpwmChannelMap[2] = MCPWM1A;
+	this->mcpwmChannelMap[3] = MCPWM1B;
+	this->mcpwmChannelMap[4] = MCPWM2A;
+	this->mcpwmChannelMap[5] = MCPWM2B;
+}
+
+int PWMHandler::init()
+{
+	//Initialize pins
+	for(int i = 0; i < 6; i++)
+	{
+		if(mcpwm_gpio_init(this->pwmUnit, this->mcpwmChannelMap[i], this->channelPins[i]) != ESP_OK)
+			return PWM_FAILURE;
+	}
+
+	//Initialize timer configs
+	for(int i = 0; i < 3; i++)
+	{
+		if(mcpwm_init(this->pwmUnit, (mcpwm_timer_t) i, this->configurationData + i) != ESP_OK)
+			return PWM_FAILURE;
+	}
+
+	//Set default frequency
+	for(int i = 0; i < 3; i++)
+	{
+		if(mcpwm_set_frequency(this->pwmUnit, (mcpwm_timer_t) i, PWM_DEFAULT_APPROX_FREQUENCY_HZ) != ESP_OK)
+			return PWM_FAILURE;
+	}
+
+	return PWM_SUCCESS;
+}
