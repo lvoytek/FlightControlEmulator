@@ -117,3 +117,27 @@ pwm_state PWMHandler::stop()
 
 	return PWM_SUCCESS;
 }
+
+pwm_state PWMHandler::setDutyAll(float channel1, float channel2, float channel3, float channel4, float channel5, float channel6)
+{
+	if(this->setDuty(1, channel1) == PWM_FAILURE) return PWM_FAILURE;
+	if(this->setDuty(2, channel2) == PWM_FAILURE) return PWM_FAILURE;
+	if(this->setDuty(3, channel3) == PWM_FAILURE) return PWM_FAILURE;
+	if(this->setDuty(4, channel4) == PWM_FAILURE) return PWM_FAILURE;
+	if(this->setDuty(5, channel5) == PWM_FAILURE) return PWM_FAILURE;
+	if(this->setDuty(6, channel6) == PWM_FAILURE) return PWM_FAILURE;
+
+	return PWM_SUCCESS;
+}
+
+pwm_state PWMHandler::setDuty(int channel, float dutyPercentage)
+{
+	if(channel < 1 || channel > 6)
+		return PWM_INVALID_CHANNEL;
+
+	channel --;
+	if(mcpwm_set_duty(this->pwmUnit, (mcpwm_timer_t) (channel/2), (mcpwm_operator_t) (channel%2), dutyPercentage) != ESP_OK)
+		return PWM_FAILURE;
+
+	return PWM_SUCCESS;
+}
