@@ -82,6 +82,12 @@ protected:
 	//Map of MCPWXA/MCPWXB macros to channels
 	mcpwm_io_signals_t mcpwmChannelMap[6];
 
+	//Minimum PWM duty cycle value for each channel when it is online for remote controlling
+	float channelMinimums[6];
+
+	//Maximum PWM duty cycle value for each channel when it is online for remote controlling
+	float channelMaximums[6];
+
 	//The pwm control unit being used
 	mcpwm_unit_t pwmUnit;
 
@@ -95,11 +101,6 @@ protected:
 
 public:
 	/**
-	 * @brief Set default Feather PWM pins on MCPWM unit 0
-	 */
-	PWMHandler();
-
-	/**
 	 * @brief Set specified PWM pins using a given MCPWM unit 
 	 * 
 	 * @param pwmUnit The MCPWM unit to use for timing
@@ -112,6 +113,11 @@ public:
 	 */
 	PWMHandler(mcpwm_unit_t pwmUnit, int channel1, int channel2, int channel3, int channel4, int channel5, int channel6);
 	
+	/**
+	 * @brief Set default Feather PWM pins on MCPWM unit 0
+	 */
+	PWMHandler() : PWMHandler(MCPWM_UNIT_0, PIN_12, PIN_27, PIN_33, PIN_15, PIN_32, PIN_14) {}
+
 	/**
 	 * @brief Initialize the mcpwm unit and prepare for gpio output use
 	 * 
@@ -140,7 +146,7 @@ public:
 	pwm_state stop();
 
 	/**
-	 * @brief Set the PWM duty cycles of all channels
+	 * @brief Set the positive PWM duty cycle percentage of all channels
 	 * 
 	 * @param channel1 The PWM Positive Duty % for the channel 1 pin
 	 * @param channel2 The PWM Positive Duty % for the channel 2 pin
@@ -156,7 +162,7 @@ public:
 	pwm_state setDutyAll(float channel1, float channel2, float channel3, float channel4, float channel5, float channel6);
 
 	/**
-	 * @brief Set the PWM duty cycle for the pin on the given channel
+	 * @brief Set the positive PWM duty cycle percentage for the pin on the given channel
 	 * 
 	 * @param channel The channel to change the duty cycle of
 	 * @param dutyPercentage The positive duty cycle percentage to change to
@@ -167,6 +173,8 @@ public:
 	 *     - PWM_INVALID_CHANNEL The given channel number is not 1-6, no change
 	 */
 	pwm_state setDuty(int channel, float dutyPercentage);
+
+
 };
 
 #endif

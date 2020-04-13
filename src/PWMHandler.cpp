@@ -22,32 +22,6 @@
 
 #include "PWMHandler.h"
 
-PWMHandler::PWMHandler()
-{
-	this->pwmUnit = MCPWM_UNIT_0;
-	this->channelPins[0] = PIN_12;
-	this->channelPins[1] = PIN_27;
-	this->channelPins[2] = PIN_33;
-	this->channelPins[3] = PIN_15;
-	this->channelPins[4] = PIN_32;
-	this->channelPins[5] = PIN_14;
-
-	this->mcpwmChannelMap[0] = MCPWM0A;
-	this->mcpwmChannelMap[1] = MCPWM0B;
-	this->mcpwmChannelMap[2] = MCPWM1A;
-	this->mcpwmChannelMap[3] = MCPWM1B;
-	this->mcpwmChannelMap[4] = MCPWM2A;
-	this->mcpwmChannelMap[5] = MCPWM2B;
-
-	for(int i = 0; i < 3; i++)
-	{
-		this->configurationData[i].cmpr_a = 5.0;
-		this->configurationData[i].cmpr_b = 5.0;
-		this->configurationData[i].duty_mode = MCPWM_DUTY_MODE_0;
-		this->configurationData[i].counter_mode = MCPWM_UP_COUNTER;
-	}
-}
-
 PWMHandler::PWMHandler(mcpwm_unit_t pwmUnit, int channel1, int channel2, int channel3, int channel4, int channel5, int channel6)
 {
 	if(pwmUnit >= MCPWM_UNIT_MAX)
@@ -68,6 +42,28 @@ PWMHandler::PWMHandler(mcpwm_unit_t pwmUnit, int channel1, int channel2, int cha
 	this->mcpwmChannelMap[3] = MCPWM1B;
 	this->mcpwmChannelMap[4] = MCPWM2A;
 	this->mcpwmChannelMap[5] = MCPWM2B;
+
+	this->channelMinimums[PWM_CHANNEL_AILERON -1] = PWM_DUTY_AILERON_MINIMUM;
+	this->channelMinimums[PWM_CHANNEL_ELEVATOR -1] = PWM_DUTY_ELEVATOR_MINIMUM;
+	this->channelMinimums[PWM_CHANNEL_THROTTLE -1] = PWM_DUTY_THROTTLE_MINIMUM;
+	this->channelMinimums[PWM_CHANNEL_RUDDER -1] = PWM_DUTY_RUDDER_MINIMUM;
+	this->channelMinimums[PWM_CHANNEL_AUX_A -1] = PWM_DUTY_AUX_MINIMUM;
+	this->channelMinimums[PWM_CHANNEL_AUX_B -1] = PWM_DUTY_AUX_MINIMUM;
+
+	this->channelMaximums[PWM_CHANNEL_AILERON -1] = PWM_DUTY_AILERON_MAXIMUM;
+	this->channelMaximums[PWM_CHANNEL_ELEVATOR -1] = PWM_DUTY_ELEVATOR_MAXIMUM;
+	this->channelMaximums[PWM_CHANNEL_THROTTLE -1] = PWM_DUTY_THROTTLE_MAXIMUM;
+	this->channelMaximums[PWM_CHANNEL_RUDDER -1] = PWM_DUTY_RUDDER_MAXIMUM;
+	this->channelMaximums[PWM_CHANNEL_AUX_A -1] = PWM_DUTY_AUX_MAXIMUM;
+	this->channelMaximums[PWM_CHANNEL_AUX_B -1] = PWM_DUTY_AUX_MAXIMUM;
+
+	for(int i = 0; i < 3; i++)
+	{
+		this->configurationData[i].cmpr_a = 5.0;
+		this->configurationData[i].cmpr_b = 5.0;
+		this->configurationData[i].duty_mode = MCPWM_DUTY_MODE_0;
+		this->configurationData[i].counter_mode = MCPWM_UP_COUNTER;
+	}
 }
 
 pwm_state PWMHandler::init()
