@@ -190,6 +190,25 @@ public:
 	 *     - PWM_OUT_OF_RC_RANGE The percentage value places duty cycle out of RC range, no change
 	 */
 	pwm_state setChannelOutput(int channel, float percentage);
+
+
+	/**
+	 * @brief Set the PWM duty cycle percentage of all channel to percentages that define where they should be in the
+	 * area of acceptable duty cycles for each RC channel
+	 * 
+	 * @param channel1 The RC output percentage for the channel 1 pin
+	 * @param channel2 The RC output percentage for the channel 2 pin
+	 * @param channel3 The RC output percentage for the channel 3 pin
+	 * @param channel4 The RC output percentage for the channel 4 pin
+	 * @param channel5 The RC output percentage for the channel 5 pin
+	 * @param channel6 The RC output percentage for the channel 6 pin
+	 * 
+	 * @return
+	 *     - PWM_SUCCESS Successful duty change
+	 *     - PWM_FAILURE Duty change failed
+	 *     - PWM_OUT_OF_RC_RANGE The percentage value for at least 1 channel places duty cycle out of RC range, no change
+	 */
+	pwm_state setChannelOutputAll(float channel1, float channel2, float channel3, float channel4, float channel5, float channel6);
 };
 
 #endif

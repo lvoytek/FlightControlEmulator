@@ -145,3 +145,16 @@ pwm_state PWMHandler::setChannelOutput(int channel, float percentage)
 
 	return setDuty(channel, (this->channelMaximums[channel - 1] - this->channelMinimums[channel - 1]) * .01 * percentage + this->channelMinimums[channel - 1]);
 }
+
+pwm_state PWMHandler::setChannelOutputAll(float channel1, float channel2, float channel3, float channel4, float channel5, float channel6)
+{
+	pwm_state returnValue;
+	if((returnValue = this->setChannelOutput(1, channel1)) != PWM_SUCCESS) return returnValue;
+	if((returnValue = this->setChannelOutput(2, channel2)) != PWM_SUCCESS) return returnValue;
+	if((returnValue = this->setChannelOutput(3, channel3)) != PWM_SUCCESS) return returnValue;
+	if((returnValue = this->setChannelOutput(4, channel4)) != PWM_SUCCESS) return returnValue;
+	if((returnValue = this->setChannelOutput(5, channel5)) != PWM_SUCCESS) return returnValue;
+	returnValue = this->setChannelOutput(6, channel6);
+	
+	return returnValue;
+}
