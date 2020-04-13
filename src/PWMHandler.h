@@ -69,7 +69,8 @@ typedef enum
 {
 	PWM_SUCCESS = 0,
 	PWM_FAILURE,
-	PWM_INVALID_CHANNEL
+	PWM_INVALID_CHANNEL,
+	PWM_OUT_OF_RC_Range
 } pwm_state;
 
 
@@ -175,6 +176,20 @@ public:
 	pwm_state setDuty(int channel, float dutyPercentage);
 
 
+	/**
+	 * @brief Set the PWM duty cycle percentage of a channel to a percentage that defines where it should be in the
+	 * area of acceptable duty cycles for the given RC channel
+	 * 
+	 * @param channel The channel to change the RC value of
+	 * @param percentage The scalar location of where it is between minimum and maximum acceptable PWM duty values
+	 * 
+	 * @return
+	 *     - PWM_SUCCESS Successful duty change
+	 *     - PWM_FAILURE Duty change failed
+	 *     - PWM_INVALID_CHANNEL The given channel number is not 1-6, no change
+	 *     - PWM_OUT_OF_RC_RANGE The percentage value places duty cycle out of RC range, still succeeds if > 0% and < 100% of duty cycle
+	 */
+	pwm_state setChannelOutput(int channel, float percentage);
 };
 
 #endif
