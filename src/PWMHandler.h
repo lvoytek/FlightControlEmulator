@@ -48,7 +48,9 @@
 #define PWM_CHANNEL_AUX_A 5
 #define PWM_CHANNEL_AUX_B 6
 
-//Enumeration of MCPWM capable pins on the Adafruit ESP32 Feather
+/**
+ * @brief Enumeration of MCPWM capable pins on the Adafruit ESP32 Feather
+ */
 typedef enum
 {
 	PIN_A0 = 26,
@@ -64,7 +66,10 @@ typedef enum
 	PIN_14 = 14
 } feather_pwm_capable_pins;
 
-//PWM function return values
+
+/**
+ * @brief PWM function return values
+ */
 typedef enum
 {
 	PWM_SUCCESS = 0,
