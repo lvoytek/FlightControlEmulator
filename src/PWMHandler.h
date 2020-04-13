@@ -187,7 +187,7 @@ public:
 	 *     - PWM_SUCCESS Successful duty change
 	 *     - PWM_FAILURE Duty change failed
 	 *     - PWM_INVALID_CHANNEL The given channel number is not 1-6, no change
-	 *     - PWM_OUT_OF_RC_RANGE The percentage value places duty cycle out of RC range, still succeeds if > 0% and < 100% of duty cycle
+	 *     - PWM_OUT_OF_RC_RANGE The percentage value places duty cycle out of RC range, no change
 	 */
 	pwm_state setChannelOutput(int channel, float percentage);
 };

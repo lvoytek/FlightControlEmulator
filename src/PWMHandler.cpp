@@ -137,3 +137,11 @@ pwm_state PWMHandler::setDuty(int channel, float dutyPercentage)
 
 	return PWM_SUCCESS;
 }
+
+pwm_state PWMHandler::setChannelOutput(int channel, float percentage)
+{
+	if(percentage < 0 || percentage > 100)
+		return PWM_OUT_OF_RC_Range;
+
+	return setDuty(channel, (this->channelMaximums[channel - 1] - this->channelMinimums[channel - 1]) * .01 * percentage + this->channelMinimums[channel - 1]);
+}
