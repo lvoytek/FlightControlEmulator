@@ -214,6 +214,24 @@ public:
 	 *     - PWM_OUT_OF_RC_RANGE The percentage value for at least 1 channel places duty cycle out of RC range, no change
 	 */
 	pwm_state setChannelOutputAll(float channel1, float channel2, float channel3, float channel4, float channel5, float channel6);
+
+	/**
+	 * @brief Set the PWM duty cycle percentage of all channel to percentages that define where they should be in the
+	 * area of acceptable duty cycles for each RC channel
+	 * 
+	 * @param aileron The RC output percentage for the aileron control channel pin
+	 * @param throttle The RC output percentage for the throttle control channel pin
+	 * @param elevator The RC output percentage for the elevator control channel pin
+	 * @param rudder The RC output percentage for the rudder control channel pin
+	 * @param aux1 The RC output percentage for the first auxiliary channel pin
+	 * @param aux2 The RC output percentage for the channel second auxiliary channel pin
+	 * 
+	 * @return
+	 *     - PWM_SUCCESS Successful duty change
+	 *     - PWM_FAILURE Duty change failed
+	 *     - PWM_OUT_OF_RC_RANGE The percentage value for at least 1 channel places duty cycle out of RC range, no change
+	 */
+	pwm_state setChannelOutputAllWithTypes(float aileron, float throttle, float elevator, float rudder, float aux1, float aux2);
 };
 
 #endif

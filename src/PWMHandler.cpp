@@ -158,3 +158,16 @@ pwm_state PWMHandler::setChannelOutputAll(float channel1, float channel2, float 
 	
 	return returnValue;
 }
+
+pwm_state PWMHandler::setChannelOutputAllWithTypes(float aileron, float throttle, float elevator, float rudder, float aux1, float aux2)
+{
+	pwm_state returnValue;
+	if((returnValue = this->setChannelOutput(PWM_CHANNEL_AILERON, aileron)) != PWM_SUCCESS) return returnValue;
+	if((returnValue = this->setChannelOutput(PWM_CHANNEL_THROTTLE, throttle)) != PWM_SUCCESS) return returnValue;
+	if((returnValue = this->setChannelOutput(PWM_CHANNEL_ELEVATOR, elevator)) != PWM_SUCCESS) return returnValue;
+	if((returnValue = this->setChannelOutput(PWM_CHANNEL_RUDDER, rudder)) != PWM_SUCCESS) return returnValue;
+	if((returnValue = this->setChannelOutput(PWM_CHANNEL_AUX_A, aux1)) != PWM_SUCCESS) return returnValue;
+	returnValue = this->setChannelOutput(PWM_CHANNEL_AUX_B, aux2);
+	
+	return returnValue;
+}
