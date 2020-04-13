@@ -23,8 +23,68 @@
 #ifndef FLIGHTCONTROLEMULATOR_H
 #define FLIGHTCONTROLEMULATOR_H
 
+#include "PWMHandler.h"
 
+/**
+ * @brief The communication protocol for flight control
+ * @note Only PWM has been implemented in version 1.0.0
+ */
+typedef enum
+{
+    PWM = 0,
+    PPM
+} FlightProtocol;
 
+/**
+ * @brief The set of error codes for flight functions
+ */
+typedef enum
+{
+    FLIGHT_SUCCESS = 0,
+    FLIGHT_PROTOCOL_FAILURE
+} FlightControlState;
+
+class FlightControlEmulator
+{
+protected:
+    //The protocol handlers, only allocated and initialized when being used
+    PWMHandler * pwm;
+    //PPMHandler * ppm;
+
+    FlightProtocol activeProtocol;
+
+public:
+    /**
+     * @brief Initializes the controller with a given protocol along with the default pins for it
+     * 
+     * @param protocol The protocol that the system will emulate
+     */
+    FlightControlEmulator(FlightProtocol protocol);
+
+    /**
+     * @brief Initializes the controller with the PWM 6-channel protocol along with its default pins
+     */
+    FlightControlEmulator() : FlightControlEmulator(PWM) {}
+
+    /**
+     * @brief Activates the protocol in the idle, ready for takeoff state
+     * 
+     * @return
+     *     - FLIGHT_SUCCESS the activation was successful
+     *     - FLIGHT_PROTOCOL_FAILURE the activation failed
+     */
+    FlightControlState start();
+
+    /**
+     * @brief Deactivates the protocol
+     * 
+     * @return
+     *     - FLIGHT_SUCCESS the deactivation was successful
+     *     - FLIGHT_PROTOCOL_FAILURE the deactivation failed
+     */
+    FlightControlState stop();
+
+};
 
 
 #endif
