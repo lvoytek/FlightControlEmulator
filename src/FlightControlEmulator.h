@@ -41,7 +41,8 @@ typedef enum
 typedef enum
 {
     FLIGHT_SUCCESS = 0,
-    FLIGHT_PROTOCOL_FAILURE
+    FLIGHT_PROTOCOL_FAILURE,
+    FLIGHT_MODESWAP_FAILURE
 } FlightControlState;
 
 class FlightControlEmulator
@@ -83,6 +84,15 @@ public:
      *     - FLIGHT_PROTOCOL_FAILURE the deactivation failed
      */
     FlightControlState stop();
+
+    /**
+     * @brief Tells the aircraft to idle using active protocol
+     * 
+     * @return
+     *     - FLIGHT_SUCCESS the mode change was successful
+     *     - FLIGHT_MODESWAP_FAILURE the change to idle failed
+     */
+    FlightControlState idle();
 
 };
 

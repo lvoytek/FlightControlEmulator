@@ -21,3 +21,49 @@
 */
 
 #include "FlightControlEmulator.h"
+
+FlightControlEmulator::FlightControlEmulator(FlightProtocol protocol)
+{
+    this->activeProtocol = protocol;
+
+    switch(protocol)
+    {
+        case PPM:
+        case PWM:
+        default:
+            this->pwm = new PWMHandler();
+    }
+}
+
+FlightControlState FlightControlEmulator::start()
+{
+    if(this->activeProtocol == PWM)
+    {
+        if(this->idle() == FLIGHT_SUCCESS && this->pwm->start() == PWM_SUCCESS)
+            return FLIGHT_SUCCESS;
+    }
+
+    return FLIGHT_PROTOCOL_FAILURE;
+}
+
+FlightControlState FlightControlEmulator::stop()
+{
+    if(this->activeProtocol == PWM)
+    {
+        if(this->pwm->stop() == PWM_SUCCESS)
+            return FLIGHT_SUCCESS;
+    }
+
+    return FLIGHT_PROTOCOL_FAILURE;
+}
+
+FlightControlState FlightControlEmulator::idle()
+{
+    if(this->activeProtocol == PWM)
+    {
+        if(this->pwm->setChannelOutputAllWithTypes(50, 50, 0, 50, 0, 0) == PWM_SUCCESS)
+            return FLIGHT_SUCCESS;
+    }
+
+    return FLIGHT_MODESWAP_FAILURE;
+}
