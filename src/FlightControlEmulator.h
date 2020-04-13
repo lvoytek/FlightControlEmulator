@@ -68,6 +68,15 @@ public:
     FlightControlEmulator() : FlightControlEmulator(PWM) {}
 
     /**
+     * @brief Initializes the active protocol internals
+     * 
+     * @return
+     *     - FLIGHT_SUCCESS the initialization was successful
+     *     - FLIGHT_PROTOCOL_FAILURE the initialization failed
+     */
+    FlightControlState init();
+
+    /**
      * @brief Activates the protocol in the idle, ready for takeoff state
      * 
      * @return

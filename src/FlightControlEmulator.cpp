@@ -35,6 +35,17 @@ FlightControlEmulator::FlightControlEmulator(FlightProtocol protocol)
     }
 }
 
+FlightControlState FlightControlEmulator::init()
+{
+    if(this->activeProtocol == PWM)
+    {
+        if(this->pwm->init() == PWM_SUCCESS)
+            return FLIGHT_SUCCESS;
+    }
+
+    return FLIGHT_PROTOCOL_FAILURE;
+}
+
 FlightControlState FlightControlEmulator::start()
 {
     if(this->activeProtocol == PWM)
