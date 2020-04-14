@@ -20,4 +20,50 @@
 * SOFTWARE.
 */
 
+#include <Arduino.h>
 #include "FlightControlEmulator.h"
+
+FlightControlEmulator controller;
+
+void setup()
+{
+    Serial.begin(115200);
+    Serial.setTimeout(200);
+
+    while (controller.init() != FLIGHT_SUCCESS)
+    {
+        Serial.println("Error: init failed");
+        delay(1000);
+    }
+}
+
+void loop()
+{
+    String out = Serial.readString();
+    out.trim();
+
+    if(!out.isEmpty())
+    {
+        if(out.equals("start"))
+        {
+            if(controller.start() == FLIGHT_SUCCESS)
+                Serial.println("Startup successful");
+            else
+                Serial.println("Startup failed");
+        }
+        else if(out.equals("stop"))
+        {
+            if(controller.stop() == FLIGHT_SUCCESS)
+                Serial.println("Shutdown successful");
+            else
+                Serial.println("Shutdown failed");
+        }
+        else if(out.equals("idle"))
+        {
+            if(controller.idle() == FLIGHT_SUCCESS)
+                Serial.println("Idle successful");
+            else
+                Serial.println("Idle failed");
+        }
+    }
+}
