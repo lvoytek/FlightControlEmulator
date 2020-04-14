@@ -97,8 +97,6 @@ protected:
 	//The pwm control unit being used
 	mcpwm_unit_t pwmUnit;
 
-	//The control unit timer being used
-
 	//MCPWM configuration settings for each timer
 	mcpwm_config_t configurationData[3];
 

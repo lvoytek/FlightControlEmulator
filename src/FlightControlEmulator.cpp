@@ -21,7 +21,6 @@
 */
 
 #include "FlightControlEmulator.h"
-
 FlightControlEmulator::FlightControlEmulator(FlightProtocol protocol)
 {
     this->activeProtocol = protocol;

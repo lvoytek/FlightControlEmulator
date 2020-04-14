@@ -21,7 +21,7 @@
  */
 
 #include "PWMHandler.h"
-
+#include <Arduino.h>
 PWMHandler::PWMHandler(mcpwm_unit_t pwmUnit, int channel1, int channel2, int channel3, int channel4, int channel5, int channel6)
 {
 	if(pwmUnit >= MCPWM_UNIT_MAX)
@@ -76,11 +76,12 @@ pwm_state PWMHandler::init()
 	}
 
 	//Initialize timer configs
-	for(int i = 0; i < 3; i++)
+	/*for(int i = 0; i < 3; i++)
 	{
-		if(mcpwm_init(this->pwmUnit, (mcpwm_timer_t) i, this->configurationData + i) != ESP_OK)
+		Serial.println(i);
+		if(mcpwm_init(this->pwmUnit, (mcpwm_timer_t) i, &this->configurationData[i]) != ESP_OK)
 			return PWM_FAILURE;
-	}
+	}*/
 
 	//Set default frequency
 	for(int i = 0; i < 3; i++)
