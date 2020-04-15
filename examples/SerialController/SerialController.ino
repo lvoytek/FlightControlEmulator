@@ -27,8 +27,8 @@ FlightControlEmulator controller;
 
 void setup()
 {
-    Serial.begin(115200);
-    Serial.setTimeout(200);
+    Serial.begin(460800);
+    Serial.setTimeout(2000);
 
     while (controller.init() != FLIGHT_SUCCESS)
     {
