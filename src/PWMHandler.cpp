@@ -59,6 +59,7 @@ PWMHandler::PWMHandler(mcpwm_unit_t pwmUnit, int channel1, int channel2, int cha
 
 	for(int i = 0; i < 3; i++)
 	{
+		this->configurationData[i].frequency = PWM_DEFAULT_APPROX_FREQUENCY_HZ;
 		this->configurationData[i].cmpr_a = 5.0;
 		this->configurationData[i].cmpr_b = 5.0;
 		this->configurationData[i].duty_mode = MCPWM_DUTY_MODE_0;
@@ -76,12 +77,12 @@ pwm_state PWMHandler::init()
 	}
 
 	//Initialize timer configs
-	/*for(int i = 0; i < 3; i++)
+	for(int i = 0; i < 3; i++)
 	{
 		Serial.println(i);
 		if(mcpwm_init(this->pwmUnit, (mcpwm_timer_t) i, &this->configurationData[i]) != ESP_OK)
 			return PWM_FAILURE;
-	}*/
+	}
 
 	//Set default frequency
 	for(int i = 0; i < 3; i++)
