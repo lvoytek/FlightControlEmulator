@@ -88,17 +88,23 @@ protected:
 	//Map of MCPWXA/MCPWXB macros to channels
 	mcpwm_io_signals_t mcpwmChannelMap[6];
 
+	//Map of channels to MCPWM units
+	mcpwm_unit_t unitChannelMap[6];
+
 	//Minimum PWM duty cycle value for each channel when it is online for remote controlling
 	float channelMinimums[6];
 
 	//Maximum PWM duty cycle value for each channel when it is online for remote controlling
 	float channelMaximums[6];
 
+	//The current duty cycle values of each channel
+	float currentDutys[6];
+
 	//The pwm control unit being used
-	mcpwm_unit_t pwmUnit;
+	mcpwm_unit_t pwmUnits[2];
 
 	//MCPWM configuration settings for each timer
-	mcpwm_config_t configurationData[3];
+	mcpwm_config_t configurationData[6];
 
 	//The base pwm frequency
 	int pwmFrequency;
@@ -115,12 +121,12 @@ public:
 	 * @param channel5 PWM Channel 5 output GPIO pin
 	 * @param channel6 PWM Channel 6 output GPIO pin
 	 */
-	PWMHandler(mcpwm_unit_t pwmUnit, int channel1, int channel2, int channel3, int channel4, int channel5, int channel6);
+	PWMHandler(mcpwm_unit_t pwmUnit1, mcpwm_unit_t pwmUnit2, int channel1, int channel2, int channel3, int channel4, int channel5, int channel6);
 	
 	/**
 	 * @brief Set default Feather PWM pins on MCPWM unit 0
 	 */
-	PWMHandler() : PWMHandler(MCPWM_UNIT_0, PIN_12, PIN_27, PIN_33, PIN_15, PIN_32, PIN_14) {}
+	PWMHandler() : PWMHandler(MCPWM_UNIT_0, MCPWM_UNIT_1, PIN_12, PIN_27, PIN_33, PIN_15, PIN_32, PIN_14) {}
 
 	/**
 	 * @brief Initialize the mcpwm unit and prepare for gpio output use

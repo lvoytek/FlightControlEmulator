@@ -21,13 +21,17 @@
  */
 
 #include "PWMHandler.h"
-#include <Arduino.h>
-PWMHandler::PWMHandler(mcpwm_unit_t pwmUnit, int channel1, int channel2, int channel3, int channel4, int channel5, int channel6)
+PWMHandler::PWMHandler(mcpwm_unit_t pwmUnit1, mcpwm_unit_t pwmUnit2, int channel1, int channel2, int channel3, int channel4, int channel5, int channel6)
 {
-	if(pwmUnit >= MCPWM_UNIT_MAX)
-		this->pwmUnit = MCPWM_UNIT_0;
+	if(pwmUnit1 >= MCPWM_UNIT_MAX)
+		this->pwmUnits[0] = MCPWM_UNIT_0;
 	else
-		this->pwmUnit = pwmUnit;
+		this->pwmUnits[0] = pwmUnit1;
+
+	if(pwmUnit2 >= MCPWM_UNIT_MAX)
+		this->pwmUnits[1] = MCPWM_UNIT_1;
+	else
+		this->pwmUnits[1] = pwmUnit1;
 
 	this->channelPins[0] = channel1;
 	this->channelPins[1] = channel2;
@@ -37,11 +41,18 @@ PWMHandler::PWMHandler(mcpwm_unit_t pwmUnit, int channel1, int channel2, int cha
 	this->channelPins[5] = channel6;
 
 	this->mcpwmChannelMap[0] = MCPWM0A;
-	this->mcpwmChannelMap[1] = MCPWM0B;
-	this->mcpwmChannelMap[2] = MCPWM1A;
-	this->mcpwmChannelMap[3] = MCPWM1B;
-	this->mcpwmChannelMap[4] = MCPWM2A;
-	this->mcpwmChannelMap[5] = MCPWM2B;
+	this->mcpwmChannelMap[1] = MCPWM1A;
+	this->mcpwmChannelMap[2] = MCPWM2A;
+	this->mcpwmChannelMap[3] = MCPWM0A;
+	this->mcpwmChannelMap[4] = MCPWM1A;
+	this->mcpwmChannelMap[5] = MCPWM2A;
+
+	this->unitChannelMap[0] = this->pwmUnits[0];
+	this->unitChannelMap[1] = this->pwmUnits[0];
+	this->unitChannelMap[2] = this->pwmUnits[0];
+	this->unitChannelMap[3] = this->pwmUnits[1];
+	this->unitChannelMap[4] = this->pwmUnits[1];
+	this->unitChannelMap[5] = this->pwmUnits[1];
 
 	this->channelMinimums[PWM_CHANNEL_AILERON -1] = PWM_DUTY_AILERON_MINIMUM;
 	this->channelMinimums[PWM_CHANNEL_ELEVATOR -1] = PWM_DUTY_ELEVATOR_MINIMUM;
@@ -57,39 +68,57 @@ PWMHandler::PWMHandler(mcpwm_unit_t pwmUnit, int channel1, int channel2, int cha
 	this->channelMaximums[PWM_CHANNEL_AUX_A -1] = PWM_DUTY_AUX_MAXIMUM;
 	this->channelMaximums[PWM_CHANNEL_AUX_B -1] = PWM_DUTY_AUX_MAXIMUM;
 
-	for(int i = 0; i < 3; i++)
+	for(int i = 0; i < 6; i++)
 	{
 		this->configurationData[i].frequency = PWM_DEFAULT_APPROX_FREQUENCY_HZ;
-		this->configurationData[i].cmpr_a = 5.0;
-		this->configurationData[i].cmpr_b = 5.0;
+		this->configurationData[i].cmpr_a = 0;
+		this->configurationData[i].cmpr_b = 0;
 		this->configurationData[i].duty_mode = MCPWM_DUTY_MODE_0;
 		this->configurationData[i].counter_mode = MCPWM_UP_COUNTER;
 	}
+
+	for(int i = 0; i < 6; i++)
+		this->currentDutys[i] = 0.0;
 }
 
 pwm_state PWMHandler::init()
 {
+	mcpwm_gpio_init(this->unitChannelMap[0], MCPWM_SYNC_0, this->channelPins[0]);
+
 	//Initialize pins
 	for(int i = 0; i < 6; i++)
 	{
-		if(mcpwm_gpio_init(this->pwmUnit, this->mcpwmChannelMap[i], this->channelPins[i]) != ESP_OK)
+		if(mcpwm_gpio_init(this->unitChannelMap[i], this->mcpwmChannelMap[i], this->channelPins[i]) != ESP_OK)
 			return PWM_FAILURE;
 	}
 
 	//Initialize timer configs
 	for(int i = 0; i < 3; i++)
 	{
-		Serial.println(i);
-		if(mcpwm_init(this->pwmUnit, (mcpwm_timer_t) i, &this->configurationData[i]) != ESP_OK)
+		if(mcpwm_init(this->pwmUnits[0], (mcpwm_timer_t) i, &this->configurationData[i]) != ESP_OK)
+			return PWM_FAILURE;
+	}
+
+	for(int i = 0; i < 3; i++)
+	{
+		if(mcpwm_init(this->pwmUnits[1], (mcpwm_timer_t) i, &this->configurationData[i + 3]) != ESP_OK)
 			return PWM_FAILURE;
 	}
 
 	//Set default frequency
 	for(int i = 0; i < 3; i++)
 	{
-		if(mcpwm_set_frequency(this->pwmUnit, (mcpwm_timer_t) i, PWM_DEFAULT_APPROX_FREQUENCY_HZ) != ESP_OK)
+		if(mcpwm_set_frequency(this->pwmUnits[0], (mcpwm_timer_t) i, PWM_DEFAULT_APPROX_FREQUENCY_HZ) != ESP_OK)
 			return PWM_FAILURE;
 	}
+
+	for(int i = 0; i < 3; i++)
+	{
+		if(mcpwm_set_frequency(this->pwmUnits[1], (mcpwm_timer_t) i, PWM_DEFAULT_APPROX_FREQUENCY_HZ) != ESP_OK)
+			return PWM_FAILURE;
+	}
+
+	this->pwmFrequency = PWM_DEFAULT_APPROX_FREQUENCY_HZ;
 
 	return PWM_SUCCESS;
 }
@@ -98,7 +127,13 @@ pwm_state PWMHandler::start()
 {
 	for(int i = 0; i < 3; i++)
 	{
-		if(mcpwm_start(this->pwmUnit, (mcpwm_timer_t) i) != ESP_OK)
+		if(mcpwm_start(this->pwmUnits[0], (mcpwm_timer_t) i) != ESP_OK)
+			return PWM_FAILURE;
+	}
+
+	for(int i = 0; i < 3; i++)
+	{
+		if(mcpwm_start(this->pwmUnits[1], (mcpwm_timer_t) i) != ESP_OK)
 			return PWM_FAILURE;
 	}
 
@@ -109,9 +144,17 @@ pwm_state PWMHandler::stop()
 {
 	for(int i = 0; i < 3; i++)
 	{
-		if(mcpwm_stop(this->pwmUnit, (mcpwm_timer_t) i) != ESP_OK)
+		if(mcpwm_set_duty(this->pwmUnits[0], (mcpwm_timer_t) i, MCPWM_OPR_A, 0) != ESP_OK || mcpwm_stop(this->pwmUnits[0], (mcpwm_timer_t) i) != ESP_OK)
 			return PWM_FAILURE;
 	}
+
+	for(int i = 0; i < 3; i++)
+	{
+		if(mcpwm_set_duty(this->pwmUnits[1], (mcpwm_timer_t) i, MCPWM_OPR_A, 0) != ESP_OK || mcpwm_stop(this->pwmUnits[1], (mcpwm_timer_t) i) != ESP_OK)
+			return PWM_FAILURE;
+	}
+
+
 
 	return PWM_SUCCESS;
 }
@@ -134,8 +177,24 @@ pwm_state PWMHandler::setDuty(int channel, float dutyPercentage)
 		return PWM_INVALID_CHANNEL;
 
 	channel --;
-	if(mcpwm_set_duty(this->pwmUnit, (mcpwm_timer_t) (channel/2), (mcpwm_operator_t) (channel%2), dutyPercentage) != ESP_OK)
+	if(mcpwm_set_duty(this->unitChannelMap[channel], (mcpwm_timer_t) (channel%3), MCPWM_OPR_A, dutyPercentage) != ESP_OK)
 		return PWM_FAILURE;
+
+	else
+	{
+		this->currentDutys[channel] = dutyPercentage;
+		
+		for(int i = channel + 1; i < 6; i++)
+		{
+			float delayPercent = 0;
+
+			for(int j = 0; j < i; j++)
+				delayPercent += this->currentDutys[j];
+
+			if(mcpwm_sync_enable(this->unitChannelMap[i], (mcpwm_timer_t) (channel%3), MCPWM_SELECT_SYNC0, int(delayPercent*10)) != ESP_OK)
+				return PWM_FAILURE;
+		}
+	}
 
 	return PWM_SUCCESS;
 }
