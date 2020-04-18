@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
+#include <Arduino.h>
 #include "PWMHandler.h"
 PWMHandler::PWMHandler(mcpwm_unit_t pwmUnit1, mcpwm_unit_t pwmUnit2, int channel1, int channel2, int channel3, int channel4, int channel5, int channel6)
 {
@@ -31,7 +31,7 @@ PWMHandler::PWMHandler(mcpwm_unit_t pwmUnit1, mcpwm_unit_t pwmUnit2, int channel
 	if(pwmUnit2 >= MCPWM_UNIT_MAX)
 		this->pwmUnits[1] = MCPWM_UNIT_1;
 	else
-		this->pwmUnits[1] = pwmUnit1;
+		this->pwmUnits[1] = pwmUnit2;
 
 	this->channelPins[0] = channel1;
 	this->channelPins[1] = channel2;
@@ -83,7 +83,8 @@ PWMHandler::PWMHandler(mcpwm_unit_t pwmUnit1, mcpwm_unit_t pwmUnit2, int channel
 
 pwm_state PWMHandler::init()
 {
-	mcpwm_gpio_init(this->unitChannelMap[0], MCPWM_SYNC_0, this->channelPins[0]);
+	mcpwm_gpio_init(this->pwmUnits[0], MCPWM_SYNC_0, PIN_A0);
+	mcpwm_gpio_init(this->pwmUnits[1], MCPWM_SYNC_0, PIN_A0);
 
 	//Initialize pins
 	for(int i = 0; i < 6; i++)
@@ -177,23 +178,20 @@ pwm_state PWMHandler::setDuty(int channel, float dutyPercentage)
 		return PWM_INVALID_CHANNEL;
 
 	channel --;
-	if(mcpwm_set_duty(this->unitChannelMap[channel], (mcpwm_timer_t) (channel%3), MCPWM_OPR_A, dutyPercentage) != ESP_OK)
-		return PWM_FAILURE;
-
-	else
+	this->currentDutys[channel] = dutyPercentage;
+	
+	for(int i = channel; i < 6; i++)
 	{
-		this->currentDutys[channel] = dutyPercentage;
-		
-		for(int i = channel + 1; i < 6; i++)
-		{
-			float delayPercent = 0;
+		float delayPercent = 0;
 
-			for(int j = 0; j < i; j++)
-				delayPercent += this->currentDutys[j];
+		for(int j = 0; j < i; j++)
+			delayPercent += this->currentDutys[j];
 
-			if(mcpwm_sync_enable(this->unitChannelMap[i], (mcpwm_timer_t) (channel%3), MCPWM_SELECT_SYNC0, int(delayPercent*10)) != ESP_OK)
-				return PWM_FAILURE;
-		}
+		if(mcpwm_sync_enable(this->unitChannelMap[i], (mcpwm_timer_t) (i%3), MCPWM_SELECT_SYNC0, int(1000-delayPercent*10)) != ESP_OK)
+			return PWM_FAILURE;
+
+		if(mcpwm_set_duty(this->unitChannelMap[i], (mcpwm_timer_t) (i%3), MCPWM_OPR_A, this->currentDutys[i]) != ESP_OK)
+			return PWM_FAILURE;
 	}
 
 	return PWM_SUCCESS;

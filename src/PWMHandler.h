@@ -124,7 +124,7 @@ public:
 	PWMHandler(mcpwm_unit_t pwmUnit1, mcpwm_unit_t pwmUnit2, int channel1, int channel2, int channel3, int channel4, int channel5, int channel6);
 	
 	/**
-	 * @brief Set default Feather PWM pins on MCPWM unit 0
+	 * @brief Set default Feather PWM pins on MCPWM unit 0 and 1
 	 */
 	PWMHandler() : PWMHandler(MCPWM_UNIT_0, MCPWM_UNIT_1, PIN_12, PIN_27, PIN_33, PIN_15, PIN_32, PIN_14) {}
 
