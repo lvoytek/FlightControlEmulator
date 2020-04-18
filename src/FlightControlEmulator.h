@@ -52,7 +52,11 @@ protected:
     PWMHandler * pwm;
     //PPMHandler * ppm;
 
+    //The protocol currently in use
     FlightProtocol activeProtocol;
+
+    //The current percentages for all channels
+    float currentValues[6];
 
 public:
     /**
@@ -95,7 +99,8 @@ public:
     FlightControlState stop();
 
     /**
-     * @brief Tells the aircraft to idle using active protocol
+     * @brief Tells the aircraft to idle using active protocol, does not change
+     * state of the auxiliary channels
      * 
      * @return
      *     - FLIGHT_SUCCESS the mode change was successful

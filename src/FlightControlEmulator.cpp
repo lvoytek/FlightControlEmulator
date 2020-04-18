@@ -32,6 +32,9 @@ FlightControlEmulator::FlightControlEmulator(FlightProtocol protocol)
         default:
             this->pwm = new PWMHandler();
     }
+
+    for(int i = 0; i < 6; i++)
+        this->currentValues[i] = 0;
 }
 
 FlightControlState FlightControlEmulator::init()
@@ -71,8 +74,14 @@ FlightControlState FlightControlEmulator::idle()
 {
     if(this->activeProtocol == PWM)
     {
-        if(this->pwm->setChannelOutputAllWithTypes(50, 50, 0, 50, 0, 0) == PWM_SUCCESS)
+        if(this->pwm->setChannelOutputAllWithTypes(50, 50, 0, 50, this->currentValues[4], this->currentValues[5]) == PWM_SUCCESS)
+        {
+            this->currentValues[0] = 50;
+            this->currentValues[1] = 50;
+            this->currentValues[2] = 0;
+            this->currentValues[3] = 50;
             return FLIGHT_SUCCESS;
+        }
     }
 
     return FLIGHT_MODESWAP_FAILURE;
