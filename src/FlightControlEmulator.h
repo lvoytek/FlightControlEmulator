@@ -42,7 +42,8 @@ typedef enum
 {
     FLIGHT_SUCCESS = 0,
     FLIGHT_PROTOCOL_FAILURE,
-    FLIGHT_MODESWAP_FAILURE
+    FLIGHT_MODESWAP_FAILURE,
+    FLIGHT_INVALID_INPUT
 } FlightControlState;
 
 class FlightControlEmulator
@@ -107,6 +108,18 @@ public:
      *     - FLIGHT_MODESWAP_FAILURE the change to idle failed
      */
     FlightControlState idle();
+
+    /**
+     * @brief Sets the throttle level
+     * 
+     * @param throttleLevel The percentage to set the throttle to
+     * 
+     * @return
+     *     - FLIGHT_SUCCESS the mode change was successful
+     *     - FLIGHT_MODESWAP_FAILURE the throttle set failed as the controller is not initialized
+     *     - FLIGHT_INVALID_INPUT a bad percentage value was entered, throttle set failed
+     */
+    FlightControlState setThrottle(float throttleLevel);
 
 };
 
