@@ -65,5 +65,21 @@ void loop()
             else
                 Serial.println("Idle failed");
         }
+        else if(out.equals("reset"))
+        {
+            if(controller.resetControl() == FLIGHT_SUCCESS)
+                Serial.println("Control reset successful");
+            else
+                Serial.println("Control reset failed");
+        }
+        else
+        {
+            if(out.startsWith("throttle"))
+            {
+                
+            }
+
+        }
+        
     }
 }
