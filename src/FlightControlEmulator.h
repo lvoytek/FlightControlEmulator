@@ -115,12 +115,62 @@ public:
      * @param throttleLevel The percentage to set the throttle to
      * 
      * @return
-     *     - FLIGHT_SUCCESS the mode change was successful
+     *     - FLIGHT_SUCCESS the throttle change was successful
      *     - FLIGHT_MODESWAP_FAILURE the throttle set failed as the controller is not initialized
      *     - FLIGHT_INVALID_INPUT a bad percentage value was entered, throttle set failed
      *     - FLIGHT_PROTOCOL_FAILURE The protocol ran into an error
      */
     FlightControlState setThrottle(float throttleLevel);
+
+    /**
+     * @brief Sets the elevator direction for planes / upward acceleration for drones
+     * 
+     * @param elevatorDir The direction to rotate the elevator / upward acceleration multiplier from -1 to 1
+     * 
+     * @return
+     *     - FLIGHT_SUCCESS the elevator change was successful
+     *     - FLIGHT_MODESWAP_FAILURE the elevator set failed as the controller is not initialized
+     *     - FLIGHT_INVALID_INPUT a bad scale value was entered, elevator set failed
+     *     - FLIGHT_PROTOCOL_FAILURE The protocol ran into an error
+     */
+    FlightControlState pitch(float elevatorDir);
+
+    /**
+     * @brief Sets the aileron direction for planes / tilt direction for drones
+     * 
+     * @param aileronDir The direction to rotate the aileron / clockwise from behind tilt from -1 to 1
+     * 
+     * @return
+     *     - FLIGHT_SUCCESS the aileron change was successful
+     *     - FLIGHT_MODESWAP_FAILURE the aileron set failed as the controller is not initialized
+     *     - FLIGHT_INVALID_INPUT a bad scale value was entered, aileron set failed
+     *     - FLIGHT_PROTOCOL_FAILURE The protocol ran into an error
+     */
+    FlightControlState roll(float aileronDir);
+
+    /**
+     * @brief Sets the rudder direction for planes / clockwise from above rotation scale for drones
+     * 
+     * @param rudderDir The direction to rotate the rudder / clockwise acceleration multiplier from -1 to 1
+     * 
+     * @return
+     *     - FLIGHT_SUCCESS the rudder change was successful
+     *     - FLIGHT_MODESWAP_FAILURE the rudder set failed as the controller is not initialized
+     *     - FLIGHT_INVALID_INPUT a bad scale value was entered, rudder set failed
+     *     - FLIGHT_PROTOCOL_FAILURE The protocol ran into an error
+     */
+    FlightControlState yaw(float rudderDir);
+
+    /**
+     * @brief Sets pitch, yaw, and roll to center, zero value
+     * 
+     * 
+     * @return
+     *     - FLIGHT_SUCCESS the control direction changes were successful
+     *     - FLIGHT_MODESWAP_FAILURE the centering failed as the controller is not initialized
+     *     - FLIGHT_PROTOCOL_FAILURE The protocol ran into an error
+     */
+    FlightControlState resetControl();
 
 };
 
