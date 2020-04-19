@@ -27,59 +27,121 @@ FlightControlEmulator controller;
 
 void setup()
 {
-    Serial.begin(460800);
-    Serial.setTimeout(2000);
+	Serial.begin(460800);
+	Serial.setTimeout(2000);
 
-    while (controller.init() != FLIGHT_SUCCESS)
-    {
-        Serial.println("Error: init failed");
-        delay(1000);
-    }
+	while (controller.init() != FLIGHT_SUCCESS)
+	{
+		Serial.println("Error: init failed");
+		delay(1000);
+	}
+}
+
+float getSerialVal(String input)
+{
+	int spaceLoc = input.lastIndexOf(" ");
+	if(spaceLoc > 1)
+	{
+		String substr = input.substring(spaceLoc + 1);
+		return(substr.toFloat());
+	}
+	else
+		return -100;
 }
 
 void loop()
 {
-    String out = Serial.readString();
-    out.trim();
+	String out = Serial.readString();
+	out.trim();
 
-    if(!out.isEmpty())
-    {
-        if(out.equals("start"))
-        {
-            if(controller.start() == FLIGHT_SUCCESS)
-                Serial.println("Startup successful");
-            else
-                Serial.println("Startup failed");
-        }
-        else if(out.equals("stop"))
-        {
-            if(controller.stop() == FLIGHT_SUCCESS)
-                Serial.println("Shutdown successful");
-            else
-                Serial.println("Shutdown failed");
-        }
-        else if(out.equals("idle"))
-        {
-            if(controller.idle() == FLIGHT_SUCCESS)
-                Serial.println("Idle successful");
-            else
-                Serial.println("Idle failed");
-        }
-        else if(out.equals("reset"))
-        {
-            if(controller.resetControl() == FLIGHT_SUCCESS)
-                Serial.println("Control reset successful");
-            else
-                Serial.println("Control reset failed");
-        }
-        else
-        {
-            if(out.startsWith("throttle"))
+	if(!out.isEmpty())
+	{
+		if(out.equals("start"))
+		{
+			if(controller.start() == FLIGHT_SUCCESS)
+				Serial.println("Startup successful");
+			else
+				Serial.println("Startup failed");
+		}
+		else if(out.equals("stop"))
+		{
+			if(controller.stop() == FLIGHT_SUCCESS)
+				Serial.println("Shutdown successful");
+			else
+				Serial.println("Shutdown failed");
+		}
+		else if(out.equals("idle"))
+		{
+			if(controller.idle() == FLIGHT_SUCCESS)
+				Serial.println("Idle successful");
+			else
+				Serial.println("Idle failed");
+		}
+		else if(out.equals("reset"))
+		{
+			if(controller.resetControl() == FLIGHT_SUCCESS)
+				Serial.println("Control reset successful");
+			else
+				Serial.println("Control reset failed");
+		}
+		else
+		{
+			if(out.startsWith("throttle"))
+			{
+				if(controller.setThrottle(getSerialVal(out)) == FLIGHT_SUCCESS)
+					Serial.println("Throttle set successful");
+				else
+					Serial.println("Throttle set failed");
+			}
+			else if(out.startsWith("pitch"))
+			{
+				if(controller.pitch(getSerialVal(out)) == FLIGHT_SUCCESS)
+					Serial.println("Pitch successful");
+				else
+					Serial.println("Pitch failed");
+			}
+			else if(out.startsWith("roll"))
+			{
+				if(controller.roll(getSerialVal(out)) == FLIGHT_SUCCESS)
+					Serial.println("Roll successful");
+				else
+					Serial.println("Roll failed");
+			}
+			else if(out.startsWith("yaw"))
+			{
+				if(controller.yaw(getSerialVal(out)) == FLIGHT_SUCCESS)
+					Serial.println("Yaw successful");
+				else
+					Serial.println("Yaw failed");
+			}
+			else if(out.equals("aux1 on"))
+			{
+				if(controller.activateAUX1() == FLIGHT_SUCCESS)
+					Serial.println("Aux1 on successful");
+				else
+					Serial.println("Aux1 on failed");
+			}
+			else if(out.equals("aux2 on"))
+			{
+				if(controller.activateAUX2() == FLIGHT_SUCCESS)
+					Serial.println("Aux2 on successful");
+				else
+					Serial.println("Aux2 on failed");
+			}
+			else if(out.equals("aux1 off"))
             {
-                
+                if(controller.deactivateAUX1() == FLIGHT_SUCCESS)
+                    Serial.println("Aux1 off successful");
+                else
+                    Serial.println("Aux1 off failed");
             }
-
-        }
-        
-    }
+			else if(out.equals("aux2 off"))
+            {
+                if(controller.deactivateAUX2() == FLIGHT_SUCCESS)
+                    Serial.println("Aux2 off successful");
+                else
+                    Serial.println("Aux2 off failed");
+            }
+		}
+	}
 }
