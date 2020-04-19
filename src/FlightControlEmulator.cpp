@@ -174,3 +174,59 @@ FlightControlState FlightControlEmulator::resetControl()
 
     return FLIGHT_SUCCESS;
 }
+
+FlightControlState FlightControlEmulator::activateAUX1()
+{
+    if(this->activeProtocol == PWM)
+    {
+        if(!this->pwm->isInitialized())
+            return FLIGHT_MODESWAP_FAILURE;
+
+        if(this->pwm->setChannelOutput(PWM_CHANNEL_AUX_A, 100) != PWM_SUCCESS)
+            return FLIGHT_PROTOCOL_FAILURE;
+    }
+
+    return FLIGHT_SUCCESS;
+}
+
+FlightControlState FlightControlEmulator::activateAUX2()
+{
+    if(this->activeProtocol == PWM)
+    {
+        if(!this->pwm->isInitialized())
+            return FLIGHT_MODESWAP_FAILURE;
+
+        if(this->pwm->setChannelOutput(PWM_CHANNEL_AUX_B, 100) != PWM_SUCCESS)
+            return FLIGHT_PROTOCOL_FAILURE;
+    }
+
+    return FLIGHT_SUCCESS;
+}
+
+FlightControlState FlightControlEmulator::deactivateAUX1()
+{
+    if(this->activeProtocol == PWM)
+    {
+        if(!this->pwm->isInitialized())
+            return FLIGHT_MODESWAP_FAILURE;
+
+        if(this->pwm->setChannelOutput(PWM_CHANNEL_AUX_A, 0) != PWM_SUCCESS)
+            return FLIGHT_PROTOCOL_FAILURE;
+    }
+
+    return FLIGHT_SUCCESS;
+}
+
+FlightControlState FlightControlEmulator::deactivateAUX2()
+{
+    if(this->activeProtocol == PWM)
+    {
+        if(!this->pwm->isInitialized())
+            return FLIGHT_MODESWAP_FAILURE;
+
+        if(this->pwm->setChannelOutput(PWM_CHANNEL_AUX_B, 0) != PWM_SUCCESS)
+            return FLIGHT_PROTOCOL_FAILURE;
+    }
+
+    return FLIGHT_SUCCESS;
+}

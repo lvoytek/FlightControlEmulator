@@ -172,6 +172,50 @@ public:
      */
     FlightControlState resetControl();
 
+    /**
+     * @brief Activate switch on AUX1, set channel level to full
+     * 
+     * 
+     * @return
+     *     - FLIGHT_SUCCESS the activation was successful
+     *     - FLIGHT_MODESWAP_FAILURE the activation failed as the controller is not initialized
+     *     - FLIGHT_PROTOCOL_FAILURE The protocol ran into an error
+     */
+    FlightControlState activateAUX1();
+
+    /**
+     * @brief Activate switch on AUX2, set channel level to full
+     * 
+     * 
+     * @return
+     *     - FLIGHT_SUCCESS the activation was successful
+     *     - FLIGHT_MODESWAP_FAILURE the activation failed as the controller is not initialized
+     *     - FLIGHT_PROTOCOL_FAILURE The protocol ran into an error
+     */
+    FlightControlState activateAUX2();
+
+    /**
+     * @brief Deactivate switch on AUX1, set channel level to low
+     * 
+     * 
+     * @return
+     *     - FLIGHT_SUCCESS the deactivation was successful
+     *     - FLIGHT_MODESWAP_FAILURE the deactivation failed as the controller is not initialized
+     *     - FLIGHT_PROTOCOL_FAILURE The protocol ran into an error
+     */
+    FlightControlState deactivateAUX1();
+
+    /**
+     * @brief Deactivate switch on AUX2, set channel level to low
+     * 
+     * 
+     * @return
+     *     - FLIGHT_SUCCESS the deactivation was successful
+     *     - FLIGHT_MODESWAP_FAILURE the deactivation failed as the controller is not initialized
+     *     - FLIGHT_PROTOCOL_FAILURE The protocol ran into an error
+     */
+    FlightControlState deactivateAUX2();
+
 };
 
 
