@@ -103,3 +103,74 @@ FlightControlState FlightControlEmulator::setThrottle(float throttleLevel)
 
     return FLIGHT_SUCCESS;
 }
+
+FlightControlState FlightControlEmulator::pitch(float elevatorDir)
+{
+    if(this->activeProtocol == PWM)
+    {
+        if(!this->pwm->isInitialized())
+            return FLIGHT_MODESWAP_FAILURE;
+
+        if(elevatorDir < -1 || elevatorDir > 1)
+            return FLIGHT_INVALID_INPUT;
+
+        if(this->pwm->setChannelOutput(PWM_CHANNEL_ELEVATOR, (elevatorDir + 1) * 50) != PWM_SUCCESS)
+            return FLIGHT_PROTOCOL_FAILURE;
+    }
+
+    return FLIGHT_SUCCESS;
+}
+
+FlightControlState FlightControlEmulator::roll(float aileronDir)
+{
+    if(this->activeProtocol == PWM)
+    {
+        if(!this->pwm->isInitialized())
+            return FLIGHT_MODESWAP_FAILURE;
+
+        if(aileronDir < -1 || aileronDir > 1)
+            return FLIGHT_INVALID_INPUT;
+
+        if(this->pwm->setChannelOutput(PWM_CHANNEL_AILERON, (aileronDir + 1) * 50) != PWM_SUCCESS)
+            return FLIGHT_PROTOCOL_FAILURE;
+    }
+
+    return FLIGHT_SUCCESS;
+}
+
+FlightControlState FlightControlEmulator::yaw(float rudderDir)
+{
+    if(this->activeProtocol == PWM)
+    {
+        if(!this->pwm->isInitialized())
+            return FLIGHT_MODESWAP_FAILURE;
+
+        if(rudderDir < -1 || rudderDir > 1)
+            return FLIGHT_INVALID_INPUT;
+
+        if(this->pwm->setChannelOutput(PWM_CHANNEL_RUDDER, (rudderDir + 1) * 50) != PWM_SUCCESS)
+            return FLIGHT_PROTOCOL_FAILURE;
+    }
+
+    return FLIGHT_SUCCESS;
+}
+
+FlightControlState FlightControlEmulator::resetControl()
+{
+    if(this->activeProtocol == PWM)
+    {
+        if(!this->pwm->isInitialized())
+            return FLIGHT_MODESWAP_FAILURE;
+
+        if(this->pwm->setChannelOutput(PWM_CHANNEL_ELEVATOR, 50) != PWM_SUCCESS)
+            return FLIGHT_PROTOCOL_FAILURE;
+
+        if(this->pwm->setChannelOutput(PWM_CHANNEL_AILERON, 50) != PWM_SUCCESS)
+            return FLIGHT_PROTOCOL_FAILURE;
+
+        if(this->pwm->setChannelOutput(PWM_CHANNEL_RUDDER, 50) != PWM_SUCCESS)
+            return FLIGHT_PROTOCOL_FAILURE;
+    }
+
+    return FLIGHT_SUCCESS;
+}
