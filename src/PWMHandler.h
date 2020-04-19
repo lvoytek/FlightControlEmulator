@@ -110,7 +110,7 @@ protected:
 	int pwmFrequency;
 
 	//States whether or not init has been called
-	byte initCalled = 0;
+	uint8_t initCalled = 0;
 
 public:
 	/**
@@ -147,7 +147,7 @@ public:
 	 *     - 1 init has been called
 	 *     - 0 init has not been called
 	 */
-	byte isInitialized() { return this->initCalled; }
+	uint8_t isInitialized() { return this->initCalled; }
 
 	/**
 	 * @brief Activate all PWM outputs in current configuration
