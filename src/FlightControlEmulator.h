@@ -118,6 +118,7 @@ public:
      *     - FLIGHT_SUCCESS the mode change was successful
      *     - FLIGHT_MODESWAP_FAILURE the throttle set failed as the controller is not initialized
      *     - FLIGHT_INVALID_INPUT a bad percentage value was entered, throttle set failed
+     *     - FLIGHT_PROTOCOL_FAILURE The protocol ran into an error
      */
     FlightControlState setThrottle(float throttleLevel);
 

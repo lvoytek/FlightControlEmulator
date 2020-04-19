@@ -86,3 +86,20 @@ FlightControlState FlightControlEmulator::idle()
 
     return FLIGHT_MODESWAP_FAILURE;
 }
+
+FlightControlState FlightControlEmulator::setThrottle(float throttleLevel)
+{
+    if(this->activeProtocol == PWM)
+    {
+        if(!this->pwm->isInitialized())
+            return FLIGHT_MODESWAP_FAILURE;
+
+        if(throttleLevel < 0 || throttleLevel > 100)
+            return FLIGHT_INVALID_INPUT;
+
+        if(this->pwm->setChannelOutput(PWM_CHANNEL_THROTTLE, throttleLevel) != PWM_SUCCESS)
+            return FLIGHT_PROTOCOL_FAILURE;
+    }
+
+    return FLIGHT_SUCCESS;
+}

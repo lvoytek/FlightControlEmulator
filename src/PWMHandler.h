@@ -109,6 +109,9 @@ protected:
 	//The base pwm frequency
 	int pwmFrequency;
 
+	//States whether or not init has been called
+	byte initCalled = 0;
+
 public:
 	/**
 	 * @brief Set specified PWM pins using a given MCPWM unit 
@@ -136,6 +139,15 @@ public:
 	 *     - PWM_FAILURE MCPWMn failure
 	 */
 	pwm_state init();
+
+	/**
+	 * @brief State whether or not init has been called
+	 * 
+	 * @return
+	 *     - 1 init has been called
+	 *     - 0 init has not been called
+	 */
+	byte isInitialized() { return this->initCalled; }
 
 	/**
 	 * @brief Activate all PWM outputs in current configuration

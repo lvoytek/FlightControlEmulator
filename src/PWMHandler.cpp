@@ -121,6 +121,8 @@ pwm_state PWMHandler::init()
 
 	this->pwmFrequency = PWM_DEFAULT_APPROX_FREQUENCY_HZ;
 
+	this->initCalled = 1;
+
 	return PWM_SUCCESS;
 }
 
